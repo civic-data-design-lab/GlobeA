@@ -5,8 +5,9 @@ import Slider from '@material-ui/core/Slider';
 import Button from '@material-ui/core/IconButton';
 import PlayIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
-import DefaultComponent from "./app.js";
-import {goToAmericas} from "./app.js";
+import App, {goToAmericas} from "./app.js";
+import Carousel from 'react-bootstrap/Carousel';
+
 
 const PositionContainer = styled('div')({
   position: 'absolute',
@@ -14,7 +15,7 @@ const PositionContainer = styled('div')({
   bottom: '40px',
   width: '100%',
   display: 'flex',
-  opacity: 1,
+  opacity: .2,
   justifyContent: 'center',
   alignItems: 'center'
 });
@@ -36,6 +37,7 @@ const SliderInput = withStyles({
 
 export default function RangeInput({min, max, value, animationSpeed, onChange, formatLabel}) {
   const [isPlaying, setIsPlaying] = useState(false);
+  
 
   // prettier-ignore
   useEffect(() => {
@@ -44,21 +46,29 @@ export default function RangeInput({min, max, value, animationSpeed, onChange, f
     if (isPlaying) {
       animation = requestAnimationFrame(() => {
         let nextValue = value + animationSpeed;
-        if (nextValue > max) {
-          nextValue = min;
-        }
+      //   if (nextValue > max) {
+//           nextValue = min;
+//         }
         onChange(nextValue);
       });
+ 
     }
+    
+
 
     return () => animation && cancelAnimationFrame(animation);
+    
   });
+  
+
 
   return (
     <PositionContainer>
-      <Button color='primary' onClick={() => setIsPlaying(!isPlaying), goToAmericas}>
+      <Button color='primary' onClick={() => setIsPlaying(!isPlaying)}>
         {isPlaying ? <PauseIcon title="Stop" /> : <PlayIcon title="Animate" />}
+       
       </Button>
+       
      //  <SliderInput
 //         min={min}
 //         max={max}
@@ -68,5 +78,9 @@ export default function RangeInput({min, max, value, animationSpeed, onChange, f
 //         valueLabelFormat={formatLabel}
       />
     </PositionContainer>
+    
   );
+
 }
+
+

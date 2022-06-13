@@ -27,6 +27,7 @@ import {CSVLoader} from '@loaders.gl/csv';
 import AnimatedArcLayer from './animated-arc-layer';
 import {sliceData, getDate} from './slice-data';
 import RangeInput from './range-input';
+import {isPlaying, setIsPlaying} from './range-input';
 
 // import {MapboxLayer} from '@deck.gl/mapbox';
 
@@ -53,8 +54,9 @@ const Container = styled('div')({
   bottom: '40px',
   width: '100%',
   display: 'flex',
-  opacity: 1,
+  opacity: 0,
   justifyContent: 'center',
+//   pointer-events:'none',
   alignItems: 'center'
 });
 
@@ -78,6 +80,7 @@ const lightingEffect = new LightingEffect({ambientLight, sunLight});
 
 
 /* eslint-disable react/no-deprecated */
+
 export default function App({data}) {
   const [currentTime, setCurrentTime] = useState(0);
 
@@ -90,15 +93,18 @@ export default function App({data}) {
   const timeRange = [currentTime, currentTime + TIME_WINDOW];
 const [glContext, setGLContext] = useState();
   const formatLabel = useCallback(t => getDate(data, t).toUTCString(), [data]);
+  
+
 
   if (data) {
     sunLight.timestamp = getDate(data, currentTime).getTime();
   }
   
+
   
 
 const [initialViewState, setInitialViewState] = useState({
-  longitude: 110,
+  longitude: 112,
   latitude: .5,
   zoom: 1
 
@@ -106,10 +112,10 @@ const [initialViewState, setInitialViewState] = useState({
 
 const goToAmericas = useCallback(() => {
     setInitialViewState({
-      longitude: -63.77,
+      longitude: -67.77,
       latitude: .9,
-      zoom: 1.3,
-      transitionDuration: 25000,
+      zoom: 1.6,
+      transitionDuration: 35000,
       transitionInterpolator: new FlyToInterpolator()
     })
   }, []);
@@ -259,7 +265,7 @@ new TextLayer({
         getTargetTimestamp: d => d.time2,
         getTilt: d => d.tilt,
         getHeight: .1,
-        getWidth: .7,   
+        getWidth: .95,   
         timeRange,
         getSourceColor: [255, 255, 0],
         getTargetColor: [255, 255, 255]
@@ -276,21 +282,24 @@ new TextLayer({
       //   controller={false}
         effects={[lightingEffect]}
         layers={[backgroundLayers, dataLayers]}
+        onLoad={goToAmericas}
+        
         getTooltip={({object}) => object && `${object.Nationality}`} />;
       />
    
       {endTime && (
         <RangeInput
-          min={1000}
+          min={500}
           max={endTime}
           value={currentTime}
           animationSpeed={TIME_WINDOW * 0.1}
           formatLabel={formatLabel}
           onChange={setCurrentTime}
+          
         />
         
       )}
-     <Container> <button onClick={goToAmericas}>Americas </button></Container>
+//      <Container> <button onClick={goToAmericas}>Americas </button></Container>
    
   //   {glContext && (
         /* This is important: Mapbox must be instantiated after the WebGLContext is available */
